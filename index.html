@@ -3,6 +3,81 @@
 <head>
     <title>บิงโกกีฬาพื้นบ้านไทย</title>
     <style>
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            max-width: 80%;
+            width: 400px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            animation: modalAppear 0.3s ease-out;
+        }
+
+        @keyframes modalAppear {
+            from {
+                transform: translate(-50%, -60%);
+                opacity: 0;
+            }
+            to {
+                transform: translate(-50%, -50%);
+                opacity: 1;
+            }
+        }
+
+        .modal-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .modal-message {
+            margin-bottom: 20px;
+            color: #34495e;
+        }
+
+        .modal-button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .modal-button:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .modal-win {
+            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+        }
+
+        .modal-error {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+        }
         body {
             font-family: 'Sarabun', sans-serif;
             display: flex;
@@ -282,7 +357,7 @@
             let availableSports = sports.filter(sport => !usedSports.has(sport));
             
             if (availableSports.length === 0) {
-                alert('กีฬาถูกสุ่มครบทุกชนิดแล้ว! กดปุ่มเริ่มเกมใหม่เพื่อเล่นอีกครั้ง');
+                showModal('❌', 'กีฬาถูกสุ่มครบแล้ว!', 'กดปุ่มเริ่มเกมใหม่เพื่อเล่นอีกครั้ง', 'error');
                 return;
             }
 
@@ -350,7 +425,7 @@
                 cells[index].classList.add('winner');
             });
             setTimeout(() => {
-                alert('ยินดีด้วย! คุณชนะแล้ว! 🎉');
+                showModal('🏆', 'ยินดีด้วย!', 'คุณชนะแล้ว! 🎉', 'win');
             }, 500);
         }
 
@@ -362,8 +437,41 @@
             createBoard();
         }
 
+        function showModal(icon, title, message, type = '') {
+            const modal = document.getElementById('modal');
+            const modalContent = modal.querySelector('.modal-content');
+            const modalIcon = modal.querySelector('.modal-icon');
+            const modalTitle = modal.querySelector('.modal-title');
+            const modalMessage = modal.querySelector('.modal-message');
+            
+            modalIcon.textContent = icon;
+            modalTitle.textContent = title;
+            modalMessage.textContent = message;
+            
+            modalContent.className = 'modal-content';
+            if (type) {
+                modalContent.classList.add(`modal-${type}`);
+            }
+            
+            modal.style.display = 'block';
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('modal');
+            modal.style.display = 'none';
+        }
+
         // เริ่มเกม
         createBoard();
     </script>
-</body>
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-icon">🎮</div>
+            <div class="modal-title">แจ้งเตือน</div>
+            <div class="modal-message" id="modal-message"></div>
+            <button class="modal-button" onclick="closeModal()">ตกลง</button>
+        </div>
+    </div>
+    </body>
+
 </html>
